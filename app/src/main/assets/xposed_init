@@ -1,2 +1,2 @@
-disguiser.yimq.com.myapplication.Init
-disguiser.yimq.com.myapplication.XposedMod
+com.yimq.disguiser.hook.Init
+com.yimq.disguiser.hook.ZygoteInit

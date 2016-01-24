@@ -1,9 +1,5 @@
-package com.yimq.disguiser;
+package com.yimq.disguiser.hook;
 
-
-import com.yimq.disguiser.hook.ContactManager;
-import com.yimq.disguiser.hook.LocationManager;
-import com.yimq.disguiser.hook.PackageManager;
 
 import de.robv.android.xposed.IXposedHookLoadPackage;
 import de.robv.android.xposed.callbacks.XC_LoadPackage;
@@ -18,7 +14,4 @@ public class Init implements IXposedHookLoadPackage {
         PackageManager.init(lPParam);
         ContactManager.init(lPParam);
     }
-
-
-
 }
