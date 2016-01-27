@@ -9,6 +9,7 @@ public class ZygoteInit implements IXposedHookZygoteInit {
 
     @Override
     public void initZygote(StartupParam startupParam) throws Throwable {
+
         XposedHelpers.findAndHookMethod("java.security.Signature", null, "verify", byte[].class, new XC_MethodHook() {
             protected void afterHookedMethod(MethodHookParam param) throws Throwable {
                 XposedBridge.log("disabled verifysignature......");
@@ -16,6 +17,7 @@ public class ZygoteInit implements IXposedHookZygoteInit {
             }
         });
 
+        PackageManager.init(startupParam);
     }
 }
 

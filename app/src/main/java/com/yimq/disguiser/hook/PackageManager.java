@@ -1,44 +1,53 @@
 package com.yimq.disguiser.hook;
 
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageInfo;
+import android.os.Build;
 
-import java.util.Collections;
-import java.util.List;
-
+import de.robv.android.xposed.IXposedHookZygoteInit;
 import de.robv.android.xposed.XC_MethodHook;
 import de.robv.android.xposed.XposedHelpers;
-import de.robv.android.xposed.callbacks.XC_LoadPackage;
 
 /**
  * Created by yimq on 16-1-5.
  */
 public class PackageManager {
-    public static void init(XC_LoadPackage.LoadPackageParam lPParam) {
-        XposedHelpers.findAndHookMethod("android.content.pm.PackageManager", lPParam.classLoader, "getInstalledPackages",
-                int.class,
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(motify((List<PackageInfo>) param.getResult()));
-                    }
-                });
 
-        XposedHelpers.findAndHookMethod("android.content.pm.PackageManager", lPParam.classLoader, "getInstalledApplications",
-                int.class,
-                new XC_MethodHook() {
-                    @Override
-                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                        param.setResult(motify((List<ApplicationInfo>) param.getResult()));
-                    }
-                });
-    }
+    public static void init(IXposedHookZygoteInit.StartupParam lPParam) throws ClassNotFoundException {
 
-    private static <T> List<T> motify(List<T> result) {
-        if (result == null) {
-            return null;
+        if (Build.VERSION.SDK_INT <=15) {
+            XposedHelpers.findAndHookMethod(Class.forName("android.content.pm.PackageParser"), "generateApplicationInfo",
+                    Class.forName("android.content.pm.PackageParser.Package"), int.class, new XC_MethodHook() {
+                        @Override
+                        protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                            ApplicationInfo info = (ApplicationInfo) param.getResult();
+                            ApplicationInfo fakeInfo = new ApplicationInfo(info);
+                            info.packageName = "com.tencent";
+                            param.setResult(fakeInfo);
+                        }
+                    });
         }
-        return Collections.emptyList();
+
+        XposedHelpers.findAndHookMethod(Class.forName("android.content.pm.PackageParser"), "generateApplicationInfo",
+                Class.forName("android.content.pm.PackageParser.Package"), int.class, new XC_MethodHook() {
+                    @Override
+                    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+                        ApplicationInfo info = (ApplicationInfo) param.getResult();
+                        param.setResult(fakeApplicationInfo(info));
+                    }
+                });
+
+
     }
+
+    private static ApplicationInfo fakeApplicationInfo(ApplicationInfo info) {
+        ApplicationInfo fakeInfo = new ApplicationInfo(info);
+        fakeInfo.packageName = "com.tencent";
+        return fakeInfo;
+    }
+
+//    private static PackageInfo fakePackageInfo(PackageInfo info) {
+//        fakeInfo.packageName = "com.tencent";
+//        return fakeInfo;
+//    }
 
 }
