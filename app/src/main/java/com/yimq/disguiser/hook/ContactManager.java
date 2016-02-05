@@ -30,7 +30,7 @@ public class ContactManager {
                     new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (param.args[0].equals(ContactsContract.CommonDataKinds.Phone.CONTENT_URI)) {
+                            if (param.args[0].equals(ContactsContract.Contacts.CONTENT_URI)) {
                                 param.setResult(motify((Cursor) param.getResult()));
                             }
                         }
@@ -42,7 +42,7 @@ public class ContactManager {
                     new XC_MethodHook() {
                         @Override
                         protected void afterHookedMethod(MethodHookParam param) throws Throwable {
-                            if (param.args[0].equals(ContactsContract.CommonDataKinds.Phone.CONTENT_URI)) {
+                            if (param.args[0].equals(ContactsContract.Contacts.CONTENT_URI)) {
                                 param.setResult(motify((Cursor) param.getResult()));
                             }
                         }
@@ -56,6 +56,7 @@ public class ContactManager {
         if (cursor == null) {
             return null;
         }
+
         return new Cursor() {
             @Override
             public int getCount() {
