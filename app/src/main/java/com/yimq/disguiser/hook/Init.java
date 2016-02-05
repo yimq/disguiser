@@ -12,5 +12,6 @@ public class Init implements IXposedHookLoadPackage {
     public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lPParam) throws Throwable {
         LocationManager.init(lPParam);
         ContactManager.init(lPParam);
+        DeviceManager.init(lPParam);
     }
 }
